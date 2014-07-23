@@ -19,24 +19,24 @@ makeCacheMatrix <- function(x = matrix()) {
 
        m <- NULL
 
-       #Function that stores matrix outside of this scope
+       #Function that stores matrix x in cache
        set <- function(y) {
               x <<- y
               m <<- NULL
        }
 
-       #Function that returns matrix to new scope
+       #Function that returns matrix x to new scope
        get <- function() x
 
-       #Function that store calculation for use outside of this scope
+       #Function that stores calculated value (m) in cache
        setvalue <- function(solve) {
               m <<- solve
        }
 
-       #Function that returns calculation to new scope
+       #Function that returns calculated value (m) to new scope
        getvalue <- function() m
 
-       #Make these functions available via this list
+       #Make functions available in new scope
        list(set = set,
             get = get,
             setvalue = setvalue,
@@ -47,21 +47,27 @@ makeCacheMatrix <- function(x = matrix()) {
 ## This function computes the inverse of the special "matrix"
 cacheSolve <- function(x, ...) {
 
+       #Check for the inverse (m)
        m <- x$getvalue()
 
+       #If inverse is in cache, return inverse (m)
        if(!is.null(m)) {
               message("getting cached data")
               return(m)
        }
 
+       #Otherwise, get the inverse(m) of the data (x)
        data <- x$get()
        m <- solve(data, ...)
 
+       #Store inverse(m) in cache, for later use
        x$setvalue(m)
 
-        ## Return a matrix that is the inverse of 'x'
+       ## Return a matrix that is the inverse of 'x'
        m
 }
+
+### SAMPLE PROGRAM ###
 
 #Inversible Matrix
 mymatrix <- rbind(c(1, -2), c(-2, 1))
